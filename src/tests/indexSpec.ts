@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import app from '../index';
+import app from '../index.ts';
 
 const request = supertest(app);
 
@@ -19,4 +19,12 @@ describe('Test Images endpoint', () => {
         expect(response.text).toBe('Images Route');
         }
     )
+});
+
+describe('Test valid params on images endpoint', () => {
+    it('gets the images endpoint', async () => {
+        const response = await request.get('/api/images?filename=test.jpg&height=200&width=300');
+        expect(response.status).toBe(200);
+        expect(response.text).toContain('Valid Paramaters');
+    });
 });

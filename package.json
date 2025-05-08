@@ -11,7 +11,7 @@
     "jasmine": "jasmine",
     "test": "npm run build && npm run jasmine",
     "start": "nodemon -V --exec ts-node src/index.ts",
-    "startbuild": "nodemon src/index.ts",
+    "startbuild": "npm run build && nodemon build/index.js",
     "lint": "npx eslint src"
   },
   "dependencies": {

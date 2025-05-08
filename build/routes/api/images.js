@@ -16,7 +16,7 @@ images.get('/', (req, res) => {
         width = convertToInt(query.width);
         console.log(width);
     }
-    //const imgaeProcess = async ():Promise<void> => {processImage(filename, height, width)};
+    const imgaeProcess = async ():Promise<void> => {processImage(filename, height, width)};
     res.send("Images Route");
 });
 export default images;
