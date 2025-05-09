@@ -4,7 +4,7 @@ function isNumeric(value) {
 
 function isJpegFilename(value: string | undefined) {
 	if (typeof value === 'string'){
-		let lowerFilename = value.toLowerCase();
+		const lowerFilename = value.toLowerCase();
 		return lowerFilename.endsWith('.jpg') || lowerFilename.endsWith('.jpeg');
 	} else {
 		return false

@@ -1,9 +1,9 @@
 import express from 'express';
 
-const logger = (req: express.Request, res: express.Response, next: Function):
+const logger = (req: express.Request, res: express.Response, next: express.NextFunction):
 void => {
-	let url = req.url;
-	let args = req.query
+	const url = req.url;
+	const args = req.query
 	console.log(`${url} was visited`);
 	console.log(`${args.filename} was supplied as filename`);
 	console.log(`${args.width} was supplied as width`);

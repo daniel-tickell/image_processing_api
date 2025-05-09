@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import supertest from 'supertest';
 import app from "../index.js";
+import processImage from "../utilities/processImage.js";
 const request = supertest(app);
 describe('Test API endpoint', () => {
     it('gets the api endpoint', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,5 +52,39 @@ describe('Test missing parameter on images endpoint', () => {
         const response = yield request.get(`/api/images?filename=${filename}&height=${height}`);
         expect(response.status).toBe(200);
         expect(response.text).toBe('<html>parameters missing</html>');
+    }));
+});
+describe('Test existing image for processing', () => {
+    it('tests for output imgae already found message', () => __awaiter(void 0, void 0, void 0, function* () {
+        const logSpy = spyOn(console, 'log').and.callThrough();
+        const height = '123';
+        const width = '123';
+        const filename = 'test.jpg';
+        const response = yield request.get(`/api/images?filename=${filename}&height=${height}&width=${width}`);
+        expect(response.status).toBe(200);
+        expect(logSpy.calls.count()).toBeGreaterThanOrEqual(5);
+        expect(logSpy.calls.argsFor(4)).toEqual(['Src image test.jpg found']);
+        expect(logSpy.calls.argsFor(5)).toEqual(['Thumbnail Already Exists']);
+    }));
+});
+describe('Test Missng source image', () => {
+    it('tests for missing image message', () => __awaiter(void 0, void 0, void 0, function* () {
+        const logSpy = spyOn(console, 'log').and.callThrough();
+        const height = '123';
+        const width = '123';
+        const filename = 'test2.jpg';
+        const response = yield request.get(`/api/images?filename=${filename}&height=${height}&width=${width}`);
+        expect(response.status).toBe(200);
+        expect(logSpy.calls.count()).toBeGreaterThanOrEqual(5);
+        expect(logSpy.calls.argsFor(4)).toEqual(['test2.jpg not found']);
+    }));
+});
+describe('Process Image Test', () => {
+    it('Test successful processing of image', () => __awaiter(void 0, void 0, void 0, function* () {
+        const height = 123;
+        const width = 123;
+        const filename = 'test.jpg';
+        const response = yield processImage(filename, height, width);
+        expect(response).toContain('thumb_test.jpg');
     }));
 });
