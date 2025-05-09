@@ -1,5 +1,5 @@
 import express from 'express';
-import images from './api/images.js';
+import images from "./api/images.js";
 const routes = express.Router();
 routes.get('/', (req, res) => {
     console.log("main route hit");

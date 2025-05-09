@@ -1,22 +1,39 @@
 import express from 'express';
-//import processImage from '../../processImage.ts';
-import convertToInt from '../../utilities/typeConversion.js';
+import processImage from "../../processImage.js";
+import { isNumeric, isJpegFilename } from "../../utilities/validateInput.js";
+import logger from "../../utilities/logger.js";
 const images = express.Router();
-images.get('/', (req, res) => {
+images.get('/', logger, (req, res) => {
     const query = req.query;
-    const filename = query.filename;
-    let height;
     let width;
-    console.log(filename);
-    if (typeof query.height !== 'number') {
-        height = convertToInt(query.height);
-        console.log(height);
+    let height;
+    if (query.filename && query.width && query.height) {
+        const filename = query.filename;
+        height = query.height;
+        width = query.width;
+        let parsedHeight = parseInt(height, 10);
+        let parsedWidth = parseInt(width, 10);
+        if (isJpegFilename(filename) && isNumeric(query.width) && isNumeric(query.height)) {
+            processImage(filename, parsedHeight, parsedWidth);
+            console.log('Valid parameters provided');
+            res.send(`<html>Valid Parameters provided 
+	 	<p> filename = ${query.filename} Valid:${isJpegFilename(filename)} 
+	 	<p> width = ${query.width} Valid: ${isNumeric(query.width)} 
+		<p> height = ${query.height} Valid: ${isNumeric(query.height)}
+		</html>`);
+        }
+        else {
+            console.log('Invalid parameters provided');
+            res.send(`<html><b>Invalid</b> Parameters provided 
+	 	<p> filename = ${query.filename} Valid:${isJpegFilename(filename)} 
+	 	<p> width = ${query.width} Valid: ${isNumeric(query.width)} 
+		<p> height = ${query.height} Valid: ${isNumeric(query.height)}
+		</html>`);
+        }
     }
-    if (typeof query.width !== 'number') {
-        width = convertToInt(query.width);
-        console.log(width);
+    else {
+        console.log('Missing paramters');
+        res.send(`<html>parameters missing</html>`);
     }
-    const imgaeProcess = async ():Promise<void> => {processImage(filename, height, width)};
-    res.send("Images Route");
 });
 export default images;
