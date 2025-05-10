@@ -1,10 +1,21 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import express from 'express';
 import processImage from "../../utilities/processImage.js";
+import path from 'path';
 import { isNumeric, isJpegFilename } from "../../utilities/validateInput.js";
 import logger from "../../utilities/logger.js";
 const images = express.Router();
+const __dirname = path.dirname(process.argv[1]);
 //Use the logger for requests
-images.get('/', logger, (req, res) => {
+images.get('/', logger, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const query = req.query;
     let width;
     let height;
@@ -18,18 +29,16 @@ images.get('/', logger, (req, res) => {
         const parsedHeight = parseInt(height, 10);
         const parsedWidth = parseInt(width, 10);
         //Check for valid filename and width/height
-        if (isJpegFilename(filename) && isNumeric(parsedWidth) && isNumeric(parsedHeight)) {
+        if (isJpegFilename(filename) &&
+            isNumeric(query.width) &&
+            isNumeric(query.height)) {
             //Call the process image function passing the filename, width and height
-            const imageResponse = processImage(filename, parsedHeight, parsedWidth);
+            const imageResponse = yield processImage(filename, parsedHeight, parsedWidth);
             // Log Successful Parameters
             console.log('Valid parameters provided');
-            //Send image success message, and link to the new image
-            res.send(`<html>Valid Parameters provided 
-		 	<p> filename = ${query.filename} Valid:${isJpegFilename(filename)} 
-		 	<p> width = ${query.width} Valid: ${isNumeric(query.width)} 
-			<p> height = ${query.height} Valid: ${isNumeric(query.height)}
-			<p> ${imageResponse}
-			</html>`);
+            res.sendFile(imageResponse, {
+                root: path.join(__dirname, '../assets', 'thumbs'),
+            });
         }
         else {
             // Send invalid params message
@@ -46,5 +55,5 @@ images.get('/', logger, (req, res) => {
         console.log('Missing paramters');
         res.send(`<html>parameters missing</html>`);
     }
-});
+}));
 export default images;

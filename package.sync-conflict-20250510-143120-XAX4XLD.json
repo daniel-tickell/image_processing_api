@@ -9,15 +9,13 @@
   "scripts": {
     "build": "npx tsc",
     "jasmine": "jasmine",
-    "prettier": "prettier --config .prettierrc './src/**/*.ts' --write",
     "test": "npm run build && npm run jasmine",
-    "start": "nodemon --ignore 'assets/**/*' --exec ts-node src/index.ts",
+    "start": "nodemon -V --exec ts-node src/index.ts",
     "startbuild": "npm run build && nodemon build/index.js",
     "lint": "npx eslint src"
   },
   "dependencies": {
     "express": "^5.1.0",
-    "@types/express": "^5.0.1",
     "sharp": "^0.34.1"
   },
   "devDependencies": {

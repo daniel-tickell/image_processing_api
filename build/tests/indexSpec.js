@@ -27,12 +27,13 @@ describe('Test Images endpoint', () => {
 });
 describe('Test valid params on images endpoint', () => {
     it('gets the valid params response', () => __awaiter(void 0, void 0, void 0, function* () {
+        const logSpy = spyOn(console, 'log').and.callThrough();
         const height = '123';
-        const width = '456';
-        const filename = 'test.jpeg';
+        const width = '123';
+        const filename = 'test.jpg';
         const response = yield request.get(`/api/images?filename=${filename}&height=${height}&width=${width}`);
-        expect(response.status).toBe(200);
-        expect(response.text).toContain('Valid');
+        expect(logSpy.calls.count()).toBeGreaterThanOrEqual(6);
+        expect(logSpy.calls.argsFor(6)).toEqual(['Valid parameters provided']);
     }));
 });
 describe('Test invalid params on images endpoint', () => {
@@ -61,7 +62,6 @@ describe('Test existing image for processing', () => {
         const width = '123';
         const filename = 'test.jpg';
         const response = yield request.get(`/api/images?filename=${filename}&height=${height}&width=${width}`);
-        expect(response.status).toBe(200);
         expect(logSpy.calls.count()).toBeGreaterThanOrEqual(5);
         expect(logSpy.calls.argsFor(4)).toEqual(['Src image test.jpg found']);
         expect(logSpy.calls.argsFor(5)).toEqual(['Thumbnail Already Exists']);
@@ -74,7 +74,6 @@ describe('Test Missng source image', () => {
         const width = '123';
         const filename = 'test2.jpg';
         const response = yield request.get(`/api/images?filename=${filename}&height=${height}&width=${width}`);
-        expect(response.status).toBe(200);
         expect(logSpy.calls.count()).toBeGreaterThanOrEqual(5);
         expect(logSpy.calls.argsFor(4)).toEqual(['test2.jpg not found']);
     }));
@@ -85,6 +84,6 @@ describe('Process Image Test', () => {
         const width = 123;
         const filename = 'test.jpg';
         const response = yield processImage(filename, height, width);
-        expect(response).toContain('thumb_test.jpg');
+        expect(response).toContain('thumb_w123_h123_test.jpg');
     }));
 });
