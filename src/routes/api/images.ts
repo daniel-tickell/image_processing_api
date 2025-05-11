@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import processImage from '../../utilities/processImage.ts';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -9,7 +9,7 @@ const images = express.Router();
 const __dirname = path.dirname(process.argv[1]);
 
 //Use the logger for requests
-images.get('/', logger, async (req, res) => {
+images.get('/', logger, async (req: Request, res: Response): Promise<void> => {
   const query = req.query;
   let width: string;
   let height: string;
